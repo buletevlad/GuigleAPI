@@ -1,0 +1,34 @@
+This is how to use it: 
+
+GoogleGeocodingAPI.GoogleAPIKey = "YOUR API KEY";
+AddressResponse result = await GoogleGeocodingAPI.SearchAddressAsync("100 Market St, Southbank");
+OR
+
+var result = await GoogleGeocodingAPI.GetCityFromCoordinatesAsync(11.1111, 22.2222);
+var city = result.Item1;
+var country = result.Item3;
+
+One thing that I like about it is that you get full objects from the API responses, so you have easy access to everything and you can use Linq and other collection helpers to easily retrieve data from it. For example for addresses, you have these types and more:
+public class AddressResponse
+{
+    public List<Address> Results { get; set; }
+    public string Status { get; set; }
+}
+public class Address
+{
+    public List<AddressComponent> AddressComponents { get; set; }
+    public string FormattedAddress { get; set; }
+    public Geometry Geometry { get; set; }
+    public string PlaceId { get; set; }
+    public List<string> Types { get; set; }
+}
+So you can do something like:
+
+(...)
+var state = addressComponentes.FirstOrDefault(r => r.Types.Contains(AddressType.administrative_area_level_1.ToString()))?.ShortName;
+It can also be used for Google Places API queries.
+All methods have an overloaded option that you can pass your own HttpClient if you're going to make multiple calls so you can open/close it yourself.
+Sorry it's not fully implemented/tested yet but for these basic searches it's totally working.
+The methods are easy to use and have summaries with detailed explanation.
+
+You can install it with the nuget command: Install-Package Easyforce.GuigleAPI
